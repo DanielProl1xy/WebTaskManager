@@ -5,6 +5,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
 
 
+
 @Table("comment")
 public class Comment {
     
@@ -13,14 +14,14 @@ public class Comment {
 
     private final Long task;
 
-    private final User author;
+    private final Long author;
     
     private final String text;
 
 
     public Comment(Long task, User author, String text) {
         this.task = task;
-        this.author = author;
+        this.author = author.getId();
         this.text = text;
     }
 
@@ -32,7 +33,7 @@ public class Comment {
         return task;
     }
 
-    public User getAuthor() {
+    public Long getAuthor() {
         return author;
     }
 
@@ -41,7 +42,7 @@ public class Comment {
     }
 
     @PersistenceCreator
-    private Comment(Long id, Long task, User author, String text) {
+    private Comment(Long id, Long task, Long author, String text) {
         this.id = id;
         this.task = task;
         this.author = author;
