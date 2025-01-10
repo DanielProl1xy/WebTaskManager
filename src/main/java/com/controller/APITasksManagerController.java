@@ -14,7 +14,6 @@ import com.entity.Token;
 import com.entity.User;
 import com.entity.Task.TaskPriority;
 import com.entity.Task.TaskStatus;
-import com.repository.TaskRepository;
 import com.service.LoginService;
 import com.service.TasksService;
 import com.service.LoginService.LoginForm;
@@ -33,7 +32,7 @@ public class APITasksManagerController {
     @Autowired
     private TasksService tasksService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<?> loginWithForm(@RequestBody LoginForm loginForm) {
 
         Token token = loginService.loginWithForm(loginForm);
@@ -41,36 +40,53 @@ public class APITasksManagerController {
         return ResponseEntity.ok().body(token.getToken());
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<?> registerWithForm(@RequestBody LoginForm loginForm) {
         Token token = loginService.registerWithForm(loginForm);
 
         return ResponseEntity.ok().body(token.getToken());
     }    
     
-    @PostMapping("taskCreate")
+    @PostMapping("/create")
     public ResponseEntity<Task> createTask(@RequestParam String token,
                                         @RequestParam String text,
                                         @RequestParam TaskStatus status,
-                                        @RequestParam TaskPriority priority) {
+                                        @RequestParam TaskPriority priority,
+                                        @RequestParam Long executorId) {
 
-        User author = loginService.validateToken(token, true);
+        User author = loginService.validateTokenElseThrow(token, true);
+        User executorUser = loginService.getUserById(executorId);
 
-        Task task = tasksService.createTask(text, status, priority, author, null);
+        Task task = tasksService.createTask(text, status, priority, author, executorUser);
 
         return ResponseEntity.ok().body(task);
     }
 
-    @PostMapping("taskComment")
+    @PostMapping("/comment")
     public ResponseEntity<?> createCommentOnTask(@RequestParam String token,
                                 @RequestParam Long taskId,
                                 @RequestParam String text) {
         
-        User author = loginService.validateToken(token, false);
+        User author = loginService.validateTokenElseThrow(token, false);
     
         Comment comment = tasksService.createCommentOnTask(author, taskId, text);
 
         return ResponseEntity.ok().body(comment);
     }
-    
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateTask(@RequestParam String token,
+                            @RequestParam Long taskId,
+                            @RequestParam TaskStatus status,
+                            @RequestParam TaskPriority priority,
+                            @RequestParam Long executorId) {
+        
+        loginService.validateTokenElseThrow(token, true);
+
+        User executorUser = loginService.getUserById(executorId);
+
+        Task task = tasksService.updateTask(token, taskId, status, priority, executorUser);
+
+        return ResponseEntity.ok().body(task);
+    }
 }

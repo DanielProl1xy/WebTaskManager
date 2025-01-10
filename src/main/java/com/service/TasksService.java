@@ -24,10 +24,10 @@ public class TasksService {
     @Autowired
     private TaskRepository taskRepository;
     
-    public Comment createCommentOnTask(User author, Long taskid, String text) {
+    public Comment createCommentOnTask(User author, Long taskId, String text) {
         
-        Task task = taskRepository.findById(taskid)
-        .orElseThrow(() -> new NoSuchElementException("Couldn't find the task with ID " + taskid)
+        Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new NoSuchElementException("Couldn't find the task with ID " + taskId)
         );
 
         Comment comment = new Comment(task.getId(), author, text);
@@ -40,6 +40,25 @@ public class TasksService {
     public Task createTask(String text, TaskStatus status, TaskPriority priority, User author, User executor) {
         Task task = new Task(author, executor, text, status, priority);
         task = taskRepository.save(task);
+        return task;
+    }
+
+    public Task updateTask(String token,
+                        Long taskId,
+                        TaskStatus status,
+                        TaskPriority priority,
+                        User executor) {
+        
+        Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new NoSuchElementException("Couldn't find the task with ID " + taskId)
+        );  
+        
+        task.setExecutor(executor);
+        task.setPriority(priority);
+        task.setStatus(status);
+
+        task = taskRepository.save(task);
+
         return task;
     }
 

@@ -14,7 +14,7 @@ import com.repository.UserRepository;
 @Service
 public class LoginService {
 
-    public class LoginForm {
+    public static class LoginForm {
 
         private final String email;
         private final Integer passwordHash;
@@ -39,14 +39,22 @@ public class LoginService {
     @Autowired
     private TokenRepository tokenRepository;
 
-    public User validateToken(String token, boolean checkIfAdmin) {
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+        .orElseThrow(
+            () -> new IllegalArgumentException("Couldn't find a user with ID " + id)
+        );
+    }
+
+    public User validateTokenElseThrow(String token, boolean checkIfAdmin) {
         Token tkn = tokenRepository.findByToken(token)
         .orElseThrow( 
             () -> new IllegalArgumentException("Invalid token provided")
         );
 
-        // NoSuchElementException
-        User user = userRepository.findById(tkn.getUserid()).get(); 
+        User user = userRepository.findById(tkn.getUserid()).orElseThrow( 
+            () -> new IllegalArgumentException("Token was found, but it has invalid Id " + tkn.getUserid())
+        );
 
         if(user.getRole() != Role.ADMIN && checkIfAdmin) 
             throw new IllegalCallerException("User " + user.getEmail() + " has no rights to perform action");
@@ -74,8 +82,7 @@ public class LoginService {
             () -> new IllegalArgumentException("User with email " + form.getEmail() + " was not found")
         );
 
-        if(user.getPasswordHash() != form.getPasswordHash())
-        {
+        if(user.getPasswordHash() != form.getPasswordHash()) {
             throw new IllegalArgumentException("Invalid password for user " + user.getEmail());
         }
 
