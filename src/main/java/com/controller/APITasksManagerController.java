@@ -54,10 +54,9 @@ public class APITasksManagerController {
                                         @RequestParam TaskPriority priority,
                                         @RequestParam Long executorId) {
 
-        User author = loginService.validateTokenElseThrow(token, true);
         User executorUser = loginService.getUserById(executorId);
 
-        Task task = tasksService.createTask(text, status, priority, author, executorUser);
+        Task task = tasksService.createTask(token, text, status, priority, executorUser);
 
         return ResponseEntity.ok().body(task);
     }
@@ -66,10 +65,8 @@ public class APITasksManagerController {
     public ResponseEntity<?> createCommentOnTask(@RequestParam String token,
                                 @RequestParam Long taskId,
                                 @RequestParam String text) {
-        
-        User author = loginService.validateTokenElseThrow(token, false);
-    
-        Comment comment = tasksService.createCommentOnTask(author, taskId, text);
+            
+        Comment comment = tasksService.createCommentOnTask(token, taskId, text);
 
         return ResponseEntity.ok().body(comment);
     }
@@ -81,8 +78,6 @@ public class APITasksManagerController {
                             @RequestParam TaskPriority priority,
                             @RequestParam Long executorId) {
         
-        loginService.validateTokenElseThrow(token, true);
-
         User executorUser = loginService.getUserById(executorId);
 
         Task task = tasksService.updateTask(token, taskId, status, priority, executorUser);

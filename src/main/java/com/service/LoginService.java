@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.entity.Token;
 import com.entity.User;
 import com.entity.User.Role;
+import com.exception.AlreadyRegisteredException;
 import com.repository.TokenRepository;
 import com.repository.UserRepository;
 
@@ -65,7 +66,7 @@ public class LoginService {
     public Token registerWithForm(LoginForm form) {
 
         userRepository.findByEmail(form.getEmail()).ifPresent(
-            (User user) -> { throw new IllegalAccessError("User with email " + form.getEmail() + " is already registered"); }
+            (User user) -> { throw new AlreadyRegisteredException("User with email " + form.getEmail() + " is already registered"); }
         );
 
         User user = new User(form.getEmail(), Role.USER, form.getPasswordHash());
