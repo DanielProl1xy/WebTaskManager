@@ -63,6 +63,13 @@ public class LoginService {
         return user;
     }
 
+    public User changeRole(User user, Role role) {
+        
+        user.setRole(role);
+        user = userRepository.save(user);
+        return user;
+    }
+
     public Token registerWithForm(LoginForm form) {
 
         userRepository.findByEmail(form.getEmail()).ifPresent(

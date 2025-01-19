@@ -105,4 +105,16 @@ public class LoginServiceTest {
             loginService.registerWithForm(form);
         });
     }
+
+    @Test
+    public void validTokenThenSuccess() {
+        loginService.validateTokenElseThrow(registeredToken.getToken(), false);
+    }
+
+    @Test
+    public void shouldThrowIfNotAdmin() {
+        assertThrows(IllegalCallerException.class, () -> {
+            loginService.validateTokenElseThrow(registeredToken.getToken(), true);
+        });        
+    }
 }
