@@ -35,8 +35,6 @@ public class Task {
 
     private TaskPriority priority;
 
-
-
     public Task(User author,
                 User executor,
                 String text,
