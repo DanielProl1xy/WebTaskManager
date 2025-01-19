@@ -48,6 +48,11 @@ public class LoginService {
     }
 
     public User validateTokenElseThrow(String token, boolean checkIfAdmin) {
+
+        if(token == null) {
+            throw new IllegalArgumentException("Null token is provided");   
+        }
+
         Token tkn = tokenRepository.findByToken(token)
         .orElseThrow( 
             () -> new IllegalArgumentException("Invalid token provided")
@@ -64,7 +69,7 @@ public class LoginService {
     }
 
     public User changeRole(User user, Role role) {
-        
+
         user.setRole(role);
         user = userRepository.save(user);
         return user;

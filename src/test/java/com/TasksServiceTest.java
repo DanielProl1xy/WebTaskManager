@@ -2,6 +2,7 @@ package com;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class TasksServiceTest {
     }
 
     @Test
-    public void testCreateTask() {
+    public void testCreateTaskThenSuccess() {
 
         String taskText = "Test task";
         createdTask = tasksService.createTask(adminToken.getToken(), taskText, TaskStatus.WAITING, TaskPriority.LOW, executorUser);
@@ -70,7 +71,14 @@ public class TasksServiceTest {
     }
 
     @Test
-    public void testCommentTask() {
+    public void testCreateTaskNotAdminThenThrow() {
+        assertThrows(IllegalCallerException.class, () -> {
+            createdTask = tasksService.createTask(executorToken.getToken(), null, null, null, null);
+        });
+    }
+
+    @Test
+    public void testCommentTaskThenSuccess() {
 
         assertNotNull(createdTask);
 
@@ -80,5 +88,5 @@ public class TasksServiceTest {
         assertNotNull(comment);
         assertEquals(text, comment.getText());
         assertEquals(comment.getAuthor(), executorUser);
-    }
+    }    
 }
