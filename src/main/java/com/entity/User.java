@@ -4,7 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("user")
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Table("tbuser")
 public class User {
     
     public enum Role {
@@ -13,9 +15,16 @@ public class User {
     }
 
     @Id
+    @JsonProperty
     private Long id;
+
+    @JsonProperty
     private String email;
+
+    @JsonProperty
     private int passwordHash;
+
+    @JsonProperty
     private Role role;
     
 

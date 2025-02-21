@@ -1,6 +1,7 @@
 package com.service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,10 @@ public class TasksService {
         .orElseThrow(() -> new NoSuchElementException("Couldn't find the task with ID " + taskId)
         );
 
-        Comment comment = new Comment(task.getId(), author, text);
+        Comment comment = new Comment();
+        comment.setTask(task.getId());
+        comment.setAuthor(author.getId());
+        comment.setText(text);
 
         comment = commentReposiory.save(comment);
 
@@ -46,7 +50,12 @@ public class TasksService {
 
         User author = loginService.validateTokenElseThrow(token, true);
 
-        Task task = new Task(author, executor, text, status, priority);
+        Task task = new Task();
+        task.setStatus(status);
+        task.setPriority(priority);
+        task.setAuthor(author.getId());
+        task.setExecutor(executor.getId());
+        task.setText(text);
         task = taskRepository.save(task);
         return task;
     }
@@ -62,7 +71,7 @@ public class TasksService {
         .orElseThrow(() -> new NoSuchElementException("Couldn't find the task with ID " + taskId)
         );  
         
-        task.setExecutor(executor);
+        task.setExecutor(executor.getId());
         task.setPriority(priority);
         task.setStatus(status);
 
@@ -71,10 +80,13 @@ public class TasksService {
         return task;
     }
     
-    public Iterable<Task> getAllTasks(String token) {
-        loginService.validateTokenElseThrow(token, false);
+    public Iterable<Task> getAllTasks() {
 
         return taskRepository.findAll();
+    }
+
+    public Optional<Task> getTaskById(Long taskId) {
+        return taskRepository.findById(taskId);
     }
 
 

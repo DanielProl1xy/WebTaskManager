@@ -1,8 +1,9 @@
 package com.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 
@@ -10,42 +11,48 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Comment {
     
     @Id
+    @JsonProperty
     private Long id;
 
-    private final Long task;
+    @JsonProperty
+    private Long task;
 
-    private final Long author;
+    @JsonProperty
+    private Long author;
     
-    private final String text;
-
-
-    public Comment(Long task, User author, String text) {
-        this.task = task;
-        this.author = author.getId();
-        this.text = text;
-    }
+    @JsonProperty
+    private String text;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getTask() {
         return task;
     }
 
+    public void setTask(Long task) {
+        this.task = task;
+    }
+
     public Long getAuthor() {
         return author;
+    }
+
+    public void setAuthor(Long author) {
+        this.author = author;
     }
 
     public String getText() {
         return text;
     }
 
-    @PersistenceCreator
-    private Comment(Long id, Long task, Long author, String text) {
-        this.id = id;
-        this.task = task;
-        this.author = author;
+    public void setText(String text) {
         this.text = text;
     }
+
 }

@@ -1,8 +1,9 @@
 package com.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.ManyToOne;
 
@@ -22,40 +23,35 @@ public class Task {
     }
 
     @Id
+    @JsonProperty
     private Long id;
 
     @ManyToOne
-    private final User author;
+    @JsonProperty
+    private Long author;
 
-    private User executor;
+    @ManyToOne
+    @JsonProperty
+    private Long executor;
 
+    @JsonProperty
     private String text;
 
+    @JsonProperty
     private TaskStatus status;
 
+    @JsonProperty
     private TaskPriority priority;
-
-    public Task(User author,
-                User executor,
-                String text,
-                TaskStatus status,
-                TaskPriority priority) {
-        this.author = author;
-        this.executor = executor;
-        this.text = text;
-        this.status = status;
-        this.priority = priority;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public User getAuthor() {
+    public Long getAuthor() {
         return author;
     }
 
-    public User getExecutor() {
+    public Long getExecutor() {
         return executor;
     }
     
@@ -71,11 +67,15 @@ public class Task {
         return status;
     }
 
+    public void setAuthor(Long author) {
+        this.author = author;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
 
-    public void setExecutor(User executor) {
+    public void setExecutor(Long executor) {
         this.executor = executor;
     }
 
@@ -85,20 +85,5 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
-    }
-
-    @PersistenceCreator
-    private Task(Long id, 
-                User author,
-                User executor,
-                String text,
-                TaskStatus status,
-                TaskPriority priority) {
-        this.id = id;
-        this.author = author;
-        this.executor = executor;
-        this.text = text;
-        this.status = status;
-        this.priority = priority;
     }
 }
